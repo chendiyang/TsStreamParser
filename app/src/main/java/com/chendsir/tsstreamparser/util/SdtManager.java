@@ -14,12 +14,7 @@ import java.util.List;
 
 import static java.lang.Integer.toHexString;
 
-/**
- * Sdt
- *
- * @author ggz
- * @date 2018/3/31
- */
+
 
 
 public class SdtManager {
