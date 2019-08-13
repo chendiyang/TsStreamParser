@@ -9,6 +9,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="刷新布局"/>
+    <Button
+        android:id="@+id/sdt_refresh_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SDT刷新"/>
     <ListView
         android:id="@+id/list_view_two"
         android:layout_width="match_parent"

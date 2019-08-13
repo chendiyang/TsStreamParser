@@ -6,11 +6,11 @@ import android.util.Log;
 
 
 import com.chendsir.tsstreamparser.activity.ProgramListActivity;
-import com.chendsir.tsstreamparser.bean.PacketHeader;
+import com.chendsir.tsstreamparser.bean.PacketData;
 import com.chendsir.tsstreamparser.bean.Pat;
+import com.chendsir.tsstreamparser.bean.Sdt;
 import com.chendsir.tsstreamparser.bean.Section;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,12 +18,7 @@ import java.util.List;
 
 import static java.lang.Integer.toHexString;
 
-/**
- * PacketManager
- *
- * @author ggz
- * @date 2018/3/22
- */
+
 
 public class PacketManager {
 	private static final String TAG = "PacketManager";
@@ -50,16 +45,16 @@ public class PacketManager {
 	private int mInputPID = -1;
 	private int mInputTableID = -1;
 	private int mPacketNum = -1;
-
+	private GetPacketLength mGetPacketLength;
+	private List<PacketData> packetDataList;
 	private SectionManager mSectionManager = new SectionManager();
 	private List<Section> mSectionList;
 
 	private Pat mPat = null;
+	private Sdt mSdt =null;
 
 	/**
 	 * 构造函数
-	 * 用于解包长
-	 * 对应线程：GetPacketLengthThread
 	 */
 	public PacketManager(String inputFilePath) {
 		super();
@@ -70,7 +65,7 @@ public class PacketManager {
 	/**
 	 * 构造函数
 	 * 用于获取指定 PID 和 table_id 的 section
-	 * 对应线程：GetPidPacketThread
+	 * 线程调用：GetPidPacketThread
 	 */
 	public PacketManager(String inputFilePath, int mPacketLength,int mPacketStartPosition, int inputPID, int inputTableId, Handler handler) {
 		super();
@@ -101,44 +96,17 @@ public class PacketManager {
 			Log.d(TAG,mPacketStartPosition+"");
 			FileInputStream fis = new FileInputStream(mInputFilePath);
 			FileOutputStream fos = new FileOutputStream(mOutputFilePath);
-
-			// 跳到包的开始位置
-			long lg = fis.skip(mPacketStartPosition);
-			if (lg != mPacketStartPosition) {
-				Log.e(TAG, "failed to skip " + mPacketStartPosition + "bytes");
-				return -1;
+            mGetPacketLength = new GetPacketLength();
+			packetDataList = mGetPacketLength.getPacketHeaderList(mInputFilePath,mPacketLength,mPacketStartPosition);
+			// 匹配指定PID以及TableID所对应的段
+            for (int i=0; i< packetDataList.size(); i++){
+            	PacketData packetData = packetDataList.get(i);
+            	if (packetData.getPid() == mInputPID) {
+            		mPacketNum++;
+					mSectionManager.matchSection(packetData, mInputTableID);
+					fos.write(packetData.getPacket());
+				}
 			}
-
-			mPacketNum = 0;
-			int err;
-			do {
-				// 结束查找
-				if (isOver) {
-					isOver = false;
-					Log.e(TAG, "isOver !!!");
-					break;
-				}
-
-				byte[] buff = new byte[mPacketLength];
-				err = fis.read(buff);
-				if (err == mPacketLength) {
-					if (buff[0] == PACKET_HEADER_SYNC_BYTE) {
-						// 构建 packet 对象
-						PacketHeader packet = new PacketHeader(buff);
-
-						// 匹配 pid
-						if (packet.getPid() == mInputPID) {
-							mPacketNum++;
-
-							// 匹配 section
-							int result = mSectionManager.matchSection(packet, mInputTableID);
-
-							// 写出文件
-							fos.write(buff);
-						}
-					}
-				}
-			} while (err != -1);
 
 			fos.close();
 			fis.close();
@@ -174,17 +142,19 @@ public class PacketManager {
 			case PAT_PID:
 				PatManager patManager = new PatManager();
 				mPat = patManager.makePAT(list);
-				mHandler.sendEmptyMessage(ProgramListActivity.REFRESH_UI_PROGRAM_LIST);
+				//mHandler.sendEmptyMessage(ProgramListActivity.REFRESH_UI_PROGRAM_LIST);
 				break;
 			case PMT_TABLE_ID:
+
 				break;
 			case SDT_PID:
+				SdtManager sdtManager = new SdtManager();
+				mSdt = sdtManager.makeSDT(list);
+				mHandler.sendEmptyMessage(ProgramListActivity.REFRESH_UI_PROGRAM_LIST);
 				break;
 
 			default:
-				if (list.get(0).getTableId() == PMT_TABLE_ID) {
-					// 解 PMT 表
-				}
+//
 				break;
 		}
 	}
@@ -228,5 +198,7 @@ public class PacketManager {
 	public Pat getPat() {
 		return mPat;
 	}
+
+	public Sdt getSdt() {return  mSdt;}
 }
 

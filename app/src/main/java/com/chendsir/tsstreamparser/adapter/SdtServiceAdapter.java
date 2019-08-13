@@ -6,21 +6,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import static java.lang.Integer.toHexString;
 
 import com.chendsir.tsstreamparser.R;
-import com.chendsir.tsstreamparser.bean.ProgramList;
 import com.chendsir.tsstreamparser.bean.SdtService;
 
 import java.util.List;
 
-public class ProgramAdapter extends BaseAdapter {
+import static java.lang.Integer.toHexString;
 
-	private List<ProgramList> mData;
-//	private List<SdtService>  mData;
+public class SdtServiceAdapter extends BaseAdapter {
+	private List<SdtService> mData;
 	private Context mContext;
 
-	public ProgramAdapter(List<ProgramList> mData, Context context) {
+	public SdtServiceAdapter(List<SdtService> mData, Context context) {
 		this.mData = mData;
 		this.mContext = context;
 	}
@@ -46,22 +44,21 @@ public class ProgramAdapter extends BaseAdapter {
 		if (convertView == null) {
 			convertView = LayoutInflater.from(mContext).inflate(R.layout.program_item, parent, false);
 			holder = new ViewHolder();
-			holder.program_Number = (TextView) convertView.findViewById(R.id.program_number_list);
-			holder.program_pid = (TextView) convertView.findViewById(R.id.program_pid_list);
+			holder.serviceNameTv = (TextView) convertView.findViewById(R.id.program_number_list);
+			holder.serviceIdTv = (TextView) convertView.findViewById(R.id.program_pid_list);
 			convertView.setTag(holder);
 		}else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		int tempNumber = mData.get(position).getProgramNumber();
-		int tempPid = mData.get(position).getProgramMapPid();
-		holder.program_Number.setText("Program Number: "+String.valueOf(tempNumber));
-		holder.program_pid.setText("   Program PID:  0x" +toHexString(tempPid));
+		String tempNumber = mData.get(position).getServiceName();
+		int tempPid = mData.get(position).getServiceId();
+		holder.serviceNameTv.setText("Program Number: "+String.valueOf(tempNumber));
+		holder.serviceIdTv.setText("   Program PID:  0x" +toHexString(tempPid));
 		return convertView;
 
 	}
 	private class ViewHolder{
-		TextView program_Number;
-		TextView program_pid;
+		TextView serviceNameTv;
+		TextView serviceIdTv;
 	}
-
 }

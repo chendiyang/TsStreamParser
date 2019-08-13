@@ -1,6 +1,5 @@
 package com.chendsir.tsstreamparser.activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -21,7 +20,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.chendsir.tsstreamparser.thread.GetPacketLengthThread;
 import com.chendsir.tsstreamparser.R;
 import com.chendsir.tsstreamparser.util.GetPacketLength;
 import com.leon.lfilepickerlibrary.LFilePicker;
@@ -53,38 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private  int packetLength;
     private  int packetStartPosition;
     private GetPacketLength mGetPacketLength;
-//    private final  MyHandler myHandler = new MyHandler(this);
 
-
-    //正确的写法
-
-//    private static class MyHandler extends  Handler {
-//        private final WeakReference<MainActivity> WeakActivity;
-//        private  MyHandler(MainActivity mainActivity) {
-//            this.WeakActivity = new WeakReference<MainActivity>(mainActivity);
-//        }
-//
-//        @Override
-//        public void handleMessage(@NonNull Message msg) {
-//            super.handleMessage(msg);
-//            Bundle data = msg.getData();
-//            MainActivity activitytemp = WeakActivity.get();
-//            if (activitytemp != null) {
-//                switch (msg.what) {
-//                    case REFRESH_UI_PACKET_LENGTH:
-//                        packetLength = data.getInt(GetPacketLengthThread.PACKET_LENGTH_KEY);
-//                        packetStartPosition = data.getInt(GetPacketLengthThread.PACKET_START_POSITION_KEY);
-//                        String strResult = activitytemp.getResources().getString(R.string.main_tv_packet_length_result);
-//                        strResult = String.format(strResult, packetLength, packetStartPosition);
-//                        activitytemp.myPacketLengthTv.setText(strResult);
-//                        break;
-//
-//                    default:
-//                        break;
-//                }
-//            }
-//            }
-//        }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -82,10 +82,7 @@ public class PatManager {
 				}
 			}
 
-//            long crc32 = ((sectionData[sectionSize - 4] & 0xFF << 24) |
-//                    (sectionData[sectionSize - 3] & 0xFF << 16) |
-//                    (sectionData[sectionSize - 2] & 0xFF << 8) |
-//                    (sectionData[sectionSize - 1] & 0xFF)) & 0xFFFFFFFF;
+
 		}
 
 		mPat.setPatProgramList(mPatProgramList);

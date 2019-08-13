@@ -1,6 +1,6 @@
 package com.chendsir.tsstreamparser.bean;
 
-public class PacketHeader {
+public class PacketData {
 	/**
 	 * sync_byte : 8 bit
 	 * 同步字节
@@ -59,7 +59,7 @@ public class PacketHeader {
 	/**
 	 * 构造函数
 	 */
-	public PacketHeader(byte[] buff) {
+	public PacketData(byte[] buff) {
 		this.syncByte = buff[0] & 0xFF;
 		this.transportErrorIndicator = (buff[1] >> 7) & 0x1;
 		this.payloadUnitStartIndicator = (buff[1] >> 6) & 0x1;

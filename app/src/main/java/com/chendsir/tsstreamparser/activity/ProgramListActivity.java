@@ -16,8 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.chendsir.tsstreamparser.R;
 import com.chendsir.tsstreamparser.adapter.ProgramAdapter;
+import com.chendsir.tsstreamparser.adapter.SdtServiceAdapter;
 import com.chendsir.tsstreamparser.bean.Pat;
 import com.chendsir.tsstreamparser.bean.ProgramList;
+import com.chendsir.tsstreamparser.bean.Sdt;
+import com.chendsir.tsstreamparser.bean.SdtService;
 import com.chendsir.tsstreamparser.thread.GetPidPacketThread;
 import com.chendsir.tsstreamparser.util.GetPacketLength;
 import com.chendsir.tsstreamparser.util.PacketManager;
@@ -32,6 +35,8 @@ public class ProgramListActivity extends AppCompatActivity implements View.OnCli
 	private static final String TAG = "ProgramListActivity";
 	private static final int PAT_PID = 0x0000;
 	private static final int PAT_TABLE_ID = 0x00;
+	private static final int SDT_PID = 0x0011;
+	private static final int SDT_TABLE_ID = 0x42;
 	public static final int REFRESH_UI_PROGRAM_LIST = 0;
 	private static final String HISTORY_FOLDER_PATH = Environment.getExternalStorageDirectory()
 			.getPath() + "/ts_history/";
@@ -45,10 +50,14 @@ public class ProgramListActivity extends AppCompatActivity implements View.OnCli
 
 	private PacketManager mPacketManager;
 	private List<ProgramList> mPatProgramList = new ArrayList<>();
-	private ProgramAdapter myAdapter;
+	private List<SdtService>  mSdtServiceList = new ArrayList<>();
+//	private ProgramAdapter myAdapter;
+	private SdtServiceAdapter myAdapter;
 	private ListView listView;
 	private Button refreshBtn;
+	private Button sdtRefreshBtn;
 	private Pat pat;
+	private Sdt sdt;
 	private GetPidPacketThread mGetPidPacketThread;
 	private int packetLength;
 	private int packetStartPosition;
@@ -78,9 +87,12 @@ public class ProgramListActivity extends AppCompatActivity implements View.OnCli
 	private void initView() {
 
 		refreshBtn = findViewById(R.id.refresh_btn);
+		sdtRefreshBtn = findViewById(R.id.sdt_refresh_btn);
 		refreshBtn.setOnClickListener(this);
+		sdtRefreshBtn.setOnClickListener(this);
 		listView = findViewById(R.id.list_view_two);
-		myAdapter = new ProgramAdapter( mPatProgramList,this);
+//		myAdapter = new ProgramAdapter(mPatProgramList,this);
+		myAdapter = new SdtServiceAdapter(mSdtServiceList,this);
 		listView.setAdapter(myAdapter);
 
 	}
@@ -95,8 +107,8 @@ public class ProgramListActivity extends AppCompatActivity implements View.OnCli
 					inputFilePath,
 					packetLength,
 					packetStartPosition,
-					PAT_PID,
-					PAT_TABLE_ID,
+					SDT_PID,
+					SDT_TABLE_ID,
 					mUIHandler);
 			Log.d(TAG, " ---- 开启线程");
 			mGetPidPacketThread = new GetPidPacketThread(
@@ -133,6 +145,19 @@ public class ProgramListActivity extends AppCompatActivity implements View.OnCli
      				myAdapter.notifyDataSetChanged();
 				}
 				break;
+			case R.id.sdt_refresh_btn:
+				Sdt sdt = mPacketManager.getSdt();
+				listView = findViewById(R.id.list_view_two);
+				//Toast.makeText(ProgramListActivity.this, "I have some data in my packet", Toast.LENGTH_SHORT).show();
+				if (sdt != null) {
+					Toast.makeText(ProgramListActivity.this, "I have some SDT data in my packet", Toast.LENGTH_SHORT).show();
+					mSdtServiceList.clear();
+					List<SdtService> sdtServiceList = sdt.getSdtServiceList();
+					for (SdtService sdtService : sdtServiceList) {
+						mSdtServiceList.add(sdtService);
+					}
+					myAdapter.notifyDataSetChanged();
+				}
 				default:
 					break;
 		}

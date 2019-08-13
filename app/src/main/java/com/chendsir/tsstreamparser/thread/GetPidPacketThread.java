@@ -34,14 +34,7 @@ public class GetPidPacketThread extends Thread {
 		} else {
 			Log.e(TAG, "failed to get Specified Packet !!!");
 		}
-		// 更新 UI
-	//	Message msg = Message.obtain();  //Message 对象可以重复使用，不需要一直new Message
-	//	msg.what = ProgramListActivity.REFRESH_UI_PROGRAM_LIST;
-//		Bundle data = new Bundle();
-//		data.putInt(PACKET_LENGTH_KEY, packetLength);
-//		data.putInt(PACKET_START_POSITION_KEY, packetStartPosition);
-//		msg.setData(data);
-	//	mHandler.sendMessage(msg);
+
 	}
 
 	public void over() {

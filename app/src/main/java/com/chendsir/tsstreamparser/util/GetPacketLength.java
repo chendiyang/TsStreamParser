@@ -3,9 +3,14 @@ package com.chendsir.tsstreamparser.util;
 
 import android.util.Log;
 
+import com.chendsir.tsstreamparser.bean.PacketData;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.Integer.toHexString;
 
@@ -16,9 +21,10 @@ public class GetPacketLength {
     private static final int PACKET_HEADER_SYNC_BYTE = 0x47;
     private static final int PACKET_LENGTH_188 = 188;
     private static final int PACKET_LENGTH_204 = 204;
+    private boolean isOver = false;
     private int mPacketStartPosition = -1;
     private int mPacketLength = -1;
-
+    private List<PacketData> packetDataList = new ArrayList<>();
 
     /**
      * 获取包的 长度 和 开始位置
@@ -40,7 +46,6 @@ public class GetPacketLength {
                 // 找到有效同步位置0x47
                 if (temp == PACKET_HEADER_SYNC_BYTE) {
                     Log.d(TAG, "已经匹配到  0x" + toHexString(PACKET_HEADER_SYNC_BYTE));
-
 
                     boolean isFinish = true;
                     for (int i = 0; i < 5; i++) {
@@ -112,6 +117,57 @@ public class GetPacketLength {
     public int getPacketStartPosition() {
         return mPacketStartPosition;
     }
+
+   //获取整体的有效包
+    public List<PacketData> getPacketHeaderList(String filePath, int mPacketLength, int mPacketStartPosition) {
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(filePath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        // 跳到包的开始位置
+        long lg = 0;
+        try {
+            lg = fis.skip(mPacketStartPosition);
+
+        if (lg != mPacketStartPosition) {
+            Log.e(TAG, "failed to skip " + mPacketStartPosition + "bytes");
+            return null;
+        }
+
+        int err;
+        int mPacketNum = 0;
+        do {
+            // 结束查找
+            if (isOver) {
+                isOver = false;
+                Log.e(TAG, "isOver !!!");
+                break;
+            }
+
+            byte[] buff = new byte[mPacketLength];
+            err = fis.read(buff);
+            if (err == mPacketLength) {
+                if (buff[0] == PACKET_HEADER_SYNC_BYTE) {
+                    // 构建 packet 对象
+                    PacketData packet = new PacketData(buff);
+                    packetDataList.add(packet);
+                }
+            }
+        } while (err != -1);
+        fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return packetDataList;
+    }
+
+    public void setPacketDataList(List<PacketData> packetDataList) {
+        this.packetDataList = packetDataList;
+    }
+
 
 
 }

@@ -2,7 +2,7 @@ package com.chendsir.tsstreamparser.util;
 
 import android.util.Log;
 
-import com.chendsir.tsstreamparser.bean.PacketHeader;
+import com.chendsir.tsstreamparser.bean.PacketData;
 import com.chendsir.tsstreamparser.bean.Section;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class SectionManager {
 		super();
 	}
 
-	public int matchSection(PacketHeader packet, int inputTableId) {
+	public int matchSection(PacketData packet, int inputTableId) {
 		Log.d(TAG, " ---------------------------------------------- ");
 		Log.d(TAG, " -- matchSection()");
 		byte[] packetBuff = packet.getPacket();
@@ -58,9 +58,9 @@ public class SectionManager {
 		}
 
 
+
 		// 判断 packet 的类型
 		if (payloadUnitStartIndicator == 0x1) {
-
 			// 解表头的数据
 			int tableId = packetBuff[SECTION_BEGIN_POSITION_1] & 0xFF;
 			int sectionLength = (((packetBuff[SECTION_BEGIN_POSITION_1 + 1] & 0xF) << 8) |
@@ -81,12 +81,7 @@ public class SectionManager {
 			Log.d(TAG, "sectionNumber : 0x" + toHexString(sectionNumber));
 			Log.d(TAG, "lastSectionNumber : 0x" + toHexString(lastSectionNumber));
 
-			// tableId : 8
-			// section_syntax_indicator : 1
-			// zero : 1
-			// reserved_1 : 2
-			// sectionLength : 12
-			// -- total : 24 (3 byte)
+	        //段的大小
 			int sectionSize = sectionLength + 3;
 			Log.d(TAG, "sectionSize : " + sectionSize);
 
@@ -107,8 +102,6 @@ public class SectionManager {
 			}
 
 			// 判断 sectionNumber 是否已经在 mList
-			// 未记录：新建
-			// 已记录：结束（忽略）
 			int num = mCursor[sectionNumber];
 			if (num == 0) {
 				Log.d(TAG, "  ");
@@ -121,9 +114,8 @@ public class SectionManager {
 				return -1;
 			}
 
-			// 下面将进行记录当前 sectionNumber 操作
 
-			// 判断 sectionLength
+			// 判断 sectionLength的有效长度
 			int theMaxEffectiveLength = packetLength - PACKET_HEADER_LENGTH - SKIP_ONE;
 			if (packetLength == PACKET_LENGTH_204) {
 				theMaxEffectiveLength = packetLength - PACKET_HEADER_LENGTH - SKIP_ONE - 16;

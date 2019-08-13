@@ -1,11 +1,10 @@
 package com.chendsir.tsstreamparser.thread;
 
-import android.os.Bundle;
+
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
-import com.chendsir.tsstreamparser.activity.MainActivity;
+
 import com.chendsir.tsstreamparser.util.GetPacketLength;
 
 public class GetPacketLengthThread extends  Thread {
