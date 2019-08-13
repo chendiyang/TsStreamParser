@@ -50,10 +50,10 @@ public class SdtServiceAdapter extends BaseAdapter {
 		}else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		String tempNumber = mData.get(position).getServiceName();
+		String tempNumber = mData.get(position).getDescribe().getServiceName();
 		int tempPid = mData.get(position).getServiceId();
-		holder.serviceNameTv.setText("Program Number: "+String.valueOf(tempNumber));
-		holder.serviceIdTv.setText("   Program PID:  0x" +toHexString(tempPid));
+		holder.serviceNameTv.setText("ServiceName : "+String.valueOf(tempNumber));
+		holder.serviceIdTv.setText("  ServicePID:  0x" +toHexString(tempPid));
 		return convertView;
 
 	}

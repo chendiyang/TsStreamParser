@@ -4,6 +4,7 @@ package com.chendsir.tsstreamparser.util;
 import android.util.Log;
 
 
+import com.chendsir.tsstreamparser.bean.Describe;
 import com.chendsir.tsstreamparser.bean.Sdt;
 import com.chendsir.tsstreamparser.bean.SdtService;
 import com.chendsir.tsstreamparser.bean.Section;
@@ -22,7 +23,7 @@ public class SdtManager {
 
     private Sdt mSdt = null;
     private List<SdtService> mSdtServiceList = new ArrayList<>();
-
+    private List<Describe> mSdtDescribe = new ArrayList<>();
     public SdtManager() {
         super();
     }
@@ -55,6 +56,7 @@ public class SdtManager {
             int sectionSize = sectionData.length;
             int theEffectiveLength = sectionSize - 15;
             for (int j = 0; j < theEffectiveLength; ) {
+                Describe describe = new Describe();
                 Log.d(TAG, " -- ");
                 int serviceId = (((sectionData[11 + j] & 0xFF) << 8) | (sectionData[12 + j] & 0xFF)) & 0xFFFF;
                 int eitScheduleFlag = (sectionData[13 + j] >> 1) & 0x1;
@@ -98,6 +100,12 @@ public class SdtManager {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
+                describe.setDescriptorTag(descriptor_tag);
+                describe.setServiceType(serviceType);
+                describe.setServiceProviderNameLength(serviceProviderNameLength);
+                describe.setServiceProviderName(serviceProviderName);
+                describe.setServiceNameLength(serviceNameLength);
+                describe.setServiceName(serviceName);
 
                 Log.d(TAG, "serviceId : 0x" + toHexString(serviceId));
                 Log.d(TAG, "eitScheduleFlag : 0x" + toHexString(eitScheduleFlag));
@@ -117,8 +125,7 @@ public class SdtManager {
                 SdtService sdtService = new SdtService(
                         serviceId, eitScheduleFlag, eitPresentFollowingFlag,
                         runningStatus, freeCaMode, descriptorsLoopLength,
-                        serviceType, serviceProviderNameLength, serviceProviderName,
-                        serviceNameLength, serviceName);
+                       describe);
                 mSdtServiceList.add(sdtService);
 
                 j += (5 + descriptorsLoopLength);

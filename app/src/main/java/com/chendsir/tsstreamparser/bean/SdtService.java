@@ -36,37 +36,38 @@ public class SdtService {
 
     // descriptor()
 
+    private  Describe describe;
 
-    /**
-     * service_type : 8 bit (1byte)
-     */
-    private int serviceType;
 
-    /**
-     * service_provider_name_length : 8 bit (1 byte)
-     */
-    private int serviceProviderNameLength;
-
-    /**
-     * service_provider_name : ?
-     */
-    private String serviceProviderName;
-
-    /**
-     * service_name_length : 8 bit (1 byte)
-     */
-    private int serviceNameLength;
-
-    /**
-     * service_name : ?
-     */
-    private String serviceName;
+//    /**
+//     * service_type : 8 bit (1byte)
+//     */
+//    private int serviceType;
+//
+//    /**
+//     * service_provider_name_length : 8 bit (1 byte)
+//     */
+//    private int serviceProviderNameLength;
+//
+//    /**
+//     * service_provider_name : ?
+//     */
+//    private String serviceProviderName;
+//
+//    /**
+//     * service_name_length : 8 bit (1 byte)
+//     */
+//    private int serviceNameLength;
+//
+//    /**
+//     * service_name : ?
+//     */
+//    private String serviceName;
 
 
     public SdtService(int serviceId, int eitScheduleFlag, int eitPresentFollowingFlag,
                       int runningStatus, int freeCaMode, int descriptorsLoopLength,
-                      int serviceType, int serviceProviderNameLength, String serviceProviderName,
-                      int serviceNameLength, String serviceName) {
+                      Describe describe) {
         super();
         this.serviceId = serviceId;
         this.eitScheduleFlag = eitScheduleFlag;
@@ -74,11 +75,8 @@ public class SdtService {
         this.runningStatus = runningStatus;
         this.freeCaMode = freeCaMode;
         this.descriptorsLoopLength = descriptorsLoopLength;
-        this.serviceType = serviceType;
-        this.serviceProviderNameLength = serviceProviderNameLength;
-        this.serviceProviderName = serviceProviderName;
-        this.serviceNameLength = serviceNameLength;
-        this.serviceName = serviceName;
+        this.describe = describe;
+
     }
 
 
@@ -129,44 +127,49 @@ public class SdtService {
     public void setDescriptorsLoopLength(int descriptorsLoopLength) {
         this.descriptorsLoopLength = descriptorsLoopLength;
     }
-
-    public int getServiceType() {
-        return serviceType;
-    }
-
-    public void setServiceType(int serviceType) {
-        this.serviceType = serviceType;
-    }
-
-    public int getServiceProviderNameLength() {
-        return serviceProviderNameLength;
-    }
-
-    public void setServiceProviderNameLength(int serviceProviderNameLength) {
-        this.serviceProviderNameLength = serviceProviderNameLength;
-    }
-
-    public String getServiceProviderName() {
-        return serviceProviderName;
-    }
-
-    public void setServiceProviderName(String serviceProviderName) {
-        this.serviceProviderName = serviceProviderName;
-    }
-
-    public int getServiceNameLength() {
-        return serviceNameLength;
-    }
-
-    public void setServiceNameLength(int serviceNameLength) {
-        this.serviceNameLength = serviceNameLength;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
+	public Describe getDescribe() {
+		return describe;
+	}
+	public void setDescribe(Describe describe) {
+		this.describe = describe;
+	}
+//    public int getServiceType() {
+//        return serviceType;
+//    }
+//
+//    public void setServiceType(int serviceType) {
+//        this.serviceType = serviceType;
+//    }
+//
+//    public int getServiceProviderNameLength() {
+//        return serviceProviderNameLength;
+//    }
+//
+//    public void setServiceProviderNameLength(int serviceProviderNameLength) {
+//        this.serviceProviderNameLength = serviceProviderNameLength;
+//    }
+//
+//    public String getServiceProviderName() {
+//        return serviceProviderName;
+//    }
+//
+//    public void setServiceProviderName(String serviceProviderName) {
+//        this.serviceProviderName = serviceProviderName;
+//    }
+//
+//    public int getServiceNameLength() {
+//        return serviceNameLength;
+//    }
+//
+//    public void setServiceNameLength(int serviceNameLength) {
+//        this.serviceNameLength = serviceNameLength;
+//    }
+//
+//    public String getServiceName() {
+//        return serviceName;
+//    }
+//
+//    public void setServiceName(String serviceName) {
+//        this.serviceName = serviceName;
+//    }
 }
